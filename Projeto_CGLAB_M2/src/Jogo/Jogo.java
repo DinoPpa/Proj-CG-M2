@@ -35,8 +35,8 @@ public class Jogo
         GLJPanel canvas = new GLJPanel();
         canvas.addGLEventListener(this);
         
-        JFrame frame = new JFrame("Exemplo01");
-        frame.setSize(500, 500);
+        JFrame frame = new JFrame("Jogo");
+        frame.setSize(700, 700); //define o tamanho da tela
         frame.getContentPane().add(canvas);
         frame.setVisible(true);
       
@@ -57,19 +57,21 @@ public class Jogo
     
     
     public void init(GLAutoDrawable glAuto) {
-      
+        GL gl = glAuto.getGL(); 
+        gl.glClearColor(0.4f, 0.4f, 0.4f, 0.4f); //define a cor de fundo
+        gl.glEnable(GL.GL_DEPTH_TEST); //teste de profundidade
     }
 
     public void display(GLAutoDrawable glAuto) {
 
         GL2 gl = glAuto.getGL().getGL2();
         
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         
-        gl.glLoadIdentity();
-        gl.glTranslated(0,0,-20);
+        gl.glLoadIdentity(); //renicia todos acumulativos
+        gl.glTranslated(0,0,-20); //onde estara a camera
        
-        gl.glBegin(GL2.GL_QUAD_STRIP);
+        gl.glBegin(GL2.GL_QUAD_STRIP); //exemplo temporario
           gl.glVertex3d(0,0,0);
           gl.glVertex3d(0,3,0);
           gl.glVertex3d(1,1,0);
@@ -80,18 +82,7 @@ public class Jogo
           gl.glVertex3d(3,3,0);
         gl.glEnd();
         
-        
-        
-        
-        
     }
-
-       
-    
-    
-    
-    
-    
     
     public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
   
@@ -110,29 +101,6 @@ public class Jogo
     }
 
     public void dispose(GLAutoDrawable glad) {
-
-    }
-
-    private void desenhaEstrela(GL2 gl) {
-    gl.glBegin(GL2.GL_TRIANGLES);
-           gl.glVertex3d(-1, 1, 0);
-           gl.glVertex3d( 0, 3, 0);
-           gl.glVertex3d( 1, 1, 0);
-           
-           gl.glVertex3d(-1, -1, 0);
-           gl.glVertex3d( 0, -3, 0);
-           gl.glVertex3d( 1, -1, 0);
-           
-           gl.glVertex3d(-1, 1, 0);
-           gl.glVertex3d( -3, 0, 0);
-           gl.glVertex3d( -1, -1, 0);
-           
-           gl.glVertex3d( 1,  1, 0);
-           gl.glVertex3d( 3,  0, 0);
-           gl.glVertex3d( 1, -1, 0);
-           
-           
-        gl.glEnd();
 
     }
 
