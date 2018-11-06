@@ -22,11 +22,11 @@ public class Mapa
         switch(id)
         {
             case 1:
-                m1();
+                m1(gl);
             break;
               
             case 2:
-                m2();
+                m2(gl);
             break;
             
             default: 
@@ -34,20 +34,37 @@ public class Mapa
         }
     }
     
-    //Cria um piso neste ponto
-    private void gerarPiso(float x, float y, float z)
+    //Cria um piso neste ponto (0-> padrao, 1-> inicio, 2->fim)
+    private void gerarPiso(GL2 gl,int tipo)
     {
-     //   glu.
+        gl.glPushMatrix();
+            gl.glColor3f(0.0f, 0.0f, 1.0f);
+
+            // Desenha um quadrado preenchido com a cor corrente
+            gl.glBegin(GL2.GL_QUADS);
+                      gl.glVertex3d(1,1,0);
+                      gl.glVertex3d(-1,1,0);
+                      gl.glVertex3d(-1,-1,0);
+                      gl.glVertex3d(1,-1,0);               
+            gl.glEnd();
+        
+        gl.glPopMatrix();
     }
     
     //Cada funcao é um mapa
-    private void m1() 
+    private void m1(GL2 gl) 
     {
+        gl.glPushMatrix();
+            
         
+        gl.glPopMatrix();
     }
 
-    private void m2() 
+    private void m2(GL2 gl) 
     {
+        gl.glPushMatrix();
+            
         
+        gl.glPopMatrix();
     }
 }

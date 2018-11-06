@@ -84,6 +84,8 @@ public class Jogo
           gl.glVertex3d(3,3,0);
         gl.glEnd();
         */
+        
+        
     }
     
     public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
