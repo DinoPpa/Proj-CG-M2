@@ -5,6 +5,7 @@
 
 package Jogo;
 
+import Classe.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.media.opengl.GL;
@@ -71,6 +72,7 @@ public class Jogo
         gl.glLoadIdentity(); //renicia todos acumulativos
         gl.glTranslated(0,0,-20); //onde estara a camera
        
+        /*
         gl.glBegin(GL2.GL_QUAD_STRIP); //exemplo temporario
           gl.glVertex3d(0,0,0);
           gl.glVertex3d(0,3,0);
@@ -81,7 +83,7 @@ public class Jogo
           gl.glVertex3d(3,0,0);
           gl.glVertex3d(3,3,0);
         gl.glEnd();
-        
+        */
     }
     
     public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
