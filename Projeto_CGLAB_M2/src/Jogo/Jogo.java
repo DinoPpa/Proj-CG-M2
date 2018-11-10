@@ -69,25 +69,16 @@ public class Jogo
         
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         
-        gl.glLoadIdentity(); //renicia todos acumulativos
-        gl.glTranslated(0,0,-20); //onde estara a camera
-       
-        /*
-        gl.glBegin(GL2.GL_QUAD_STRIP); //exemplo temporario
-          gl.glVertex3d(0,0,0);
-          gl.glVertex3d(0,3,0);
-          gl.glVertex3d(1,1,0);
-          gl.glVertex3d(1,2,0);
-          gl.glVertex3d(2,1,0);
-          gl.glVertex3d(2,2,0);
-          gl.glVertex3d(3,0,0);
-          gl.glVertex3d(3,3,0);
-        gl.glEnd();
-        */
+        gl.glLoadIdentity(); //Renicia todos acumulativos
+        gl.glTranslated(0,0,-20); //Onde estara a camera em posição
+        //Descobrir como deixa a camera de lado para gera um efeito 3D
+        
+        //Chamando o mapa
+        new Mapa().gerarMapa(1, gl);
+        
         
         
     }
-    
     public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
   
         GL2 gl = gLAutoDrawable.getGL().getGL2(); 
@@ -98,6 +89,30 @@ public class Jogo
         gl.glLoadIdentity();
         gl.glTranslated(0,0,-5);
     }
+    
+    /*
+     public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
+        GL2 gl = drawable.getGL().getGL2();
+
+        gl.glViewport(0, 0, w, h);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();
+        if (w <= h) {
+            gl.glOrtho(-1.5, 1.5,
+                    -1.5 * (float) h / (float) w,//
+                    1.5 * (float) h / (float) w,//
+                    -10.0, 10.0
+            );
+        } else {
+            gl.glOrtho(-1.5 * (float) w / (float) h, //
+                    1.5 * (float) w / (float) h, //
+                    -1.5, 1.5, -10.0, 10.0
+            );
+        }
+
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glLoadIdentity();
+    }*/
 
 
     public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
