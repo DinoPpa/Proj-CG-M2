@@ -19,36 +19,33 @@ public class Mapa
     //Pede para gerar o mapa X
     public void gerarMapa(int id, GL2 gl)
     {
-        double[][] listaInfo = null;
-        
+        double[][] listaInfo = infoMapa(id);
+        renderizar(listaInfo, gl);
+    }
+    
+    public double[][] infoMapa(int id)
+    {
         try
         {
             switch(id)
             {
                 case 1:
-                    listaInfo = m1();
-                break;
+                    return m1();
 
                 case 2:
-                   // listaInfo = m2();
-                break;
+                    return m2();
+            }
 
-                default: 
-                    throw new UnsupportedOperationException("ERRO - ID mapa incorreto");
-            }
-            if(listaInfo == null)
-            {
-                throw new UnsupportedOperationException("ERRO - listaInfo retornou NULL");
-            }
+            throw new UnsupportedOperationException("ERRO - ID mapa incorreto");
         } 
         catch (Exception e) 
         {
             System.out.println(e);
         }
         
-        renderizar(listaInfo, gl);
-        
+        return null;
     }
+    
     
     //Retorna uma lista com os dados da coordenada X,Y,Z 
     //(Foram separado numa funcao para diminui a complexidade)
@@ -73,6 +70,11 @@ public class Mapa
             2 2 2
         */
         return temp;
+    }
+    
+    private double[][] m2() 
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     //OBS.: listaInfo: 
@@ -119,4 +121,6 @@ public class Mapa
             //talvez seja ideal: Diminui um pouco ou fazer uma borda
         gl.glPopMatrix();
     }
+
+    
 }
