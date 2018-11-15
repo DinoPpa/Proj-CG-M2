@@ -6,6 +6,11 @@ package Jogo;
 
 import Classe.*;
 import com.jogamp.opengl.util.Animator;
+<<<<<<< HEAD
+=======
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+>>>>>>> Yudi
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.media.opengl.GL;
@@ -20,16 +25,38 @@ import javax.swing.JFrame;
  *
  * @author Glauco
  */
+<<<<<<< HEAD
 public class Jogo
         implements GLEventListener {
     
+=======
+public class Jogo 
+            implements GLEventListener,
+            KeyListener {
+
+>>>>>>> Yudi
     GLU glu = new GLU();
     
     public static void main(String args[]) {
         new Jogo();
     }
+<<<<<<< HEAD
     private double r;
     private boolean mostra=true;
+=======
+    private boolean up = false;
+    private boolean down = false;
+    private boolean right = false;
+    private boolean left = false;
+    private boolean controlEnable = true; //Controla que o usuario nao devera fazer nenhum movimento, até acaba animação
+    private boolean A = false;
+    private boolean S = false;
+    private boolean D = false;
+    private boolean F = false;
+    private Mapa m = new Mapa();
+    private int fase = 1;
+    private boolean mostraMenu = false;
+>>>>>>> Yudi
     
     public Jogo() {
         GLJPanel canvas = new GLJPanel();
@@ -39,7 +66,12 @@ public class Jogo
         frame.setSize(700, 700); //define o tamanho da tela
         frame.getContentPane().add(canvas);
         frame.setVisible(true);
+<<<<<<< HEAD
         
+=======
+        frame.addKeyListener(this);
+         
+>>>>>>> Yudi
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -50,6 +82,7 @@ public class Jogo
                 }).start();
             }
         });
+<<<<<<< HEAD
         
     }
     
@@ -62,6 +95,18 @@ public class Jogo
 
         Animator ani = new Animator(glAuto);
         ani.start();
+=======
+
+    }
+    
+    public void init(GLAutoDrawable glAuto) {
+        Animator a = new Animator(glAuto);
+        a.start();
+        GL gl = glAuto.getGL(); 
+        gl.glClearColor(0.4f, 0.4f, 0.4f, 0.4f); //define a cor de fundo
+        gl.glEnable(GL.GL_DEPTH_TEST); //teste de profundidade
+        
+>>>>>>> Yudi
     }
     Cubo c1 = new Cubo();
 
@@ -72,6 +117,7 @@ public class Jogo
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         
         gl.glLoadIdentity(); //Renicia todos acumulativos
+<<<<<<< HEAD
         gl.glTranslated(0, 0, -20); //Onde estara a camera em posição
         //Descobrir como deixa a camera de lado para gera um efeito 3D
         
@@ -80,8 +126,19 @@ public class Jogo
 
         //Chamando o mapa
         //new Mapa().gerarMapa(1, gl);
+=======
+        gl.glTranslated(0,0,-15); //Onde estara a camera em posição
         
+        botoesCamera(gl); //rotaciona o mapa de acordo com o usuario (A,S,D,F,G)
+>>>>>>> Yudi
         
+        if (mostraMenu) // obs.: MostraMenu esta false, pois precisa dá parte da Eloa
+        {
+            //MENU
+            //OBS.: Fase é qual mapa deve ser gerado
+        }
+        
+<<<<<<< HEAD
         if(mostra)
         c1.cubo(gl);
         
@@ -90,6 +147,16 @@ public class Jogo
     public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
         
         GL2 gl = gLAutoDrawable.getGL().getGL2();        
+=======
+        //Chamando o mapa
+        m.gerarMapa(fase, gl);
+        
+    }
+    
+    public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) 
+    {  
+        GL2 gl = gLAutoDrawable.getGL().getGL2(); 
+>>>>>>> Yudi
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(60, 1, 1, 30);
@@ -128,5 +195,111 @@ public class Jogo
     public void dispose(GLAutoDrawable glad) {
         
     }
+<<<<<<< HEAD
     
+=======
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        
+        if (controlEnable) //Controle do jogador no cubo
+        {
+            controlEnable = false;
+            switch (e.getKeyCode()) 
+            {
+                case KeyEvent.VK_UP:
+                    up = true;
+                    break;
+
+                case KeyEvent.VK_DOWN:
+                    down = true;
+                    break;
+
+                case KeyEvent.VK_RIGHT:
+                    right = true;
+                    break;
+
+                case KeyEvent.VK_LEFT:
+                    left = true;
+                    break;
+
+                default:
+                    controlEnable = true;
+                    break;
+            }
+        }
+        
+        switch (e.getKeyCode()) //Controle de camera do jogador
+        {
+            case KeyEvent.VK_A:
+                restartCamera();
+                A = true;
+                break;
+
+            case KeyEvent.VK_S:
+                restartCamera();
+                S = true;
+                break;
+
+            case KeyEvent.VK_D:
+                restartCamera();
+                D = true;
+                break;
+
+            case KeyEvent.VK_F:
+                restartCamera();
+                F = true;
+                break;
+                
+            case KeyEvent.VK_G:
+                restartCamera();
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+    
+    }
+    
+    //Renicia o boolean relacionado a camera
+    private void restartCamera()
+    {
+        A = false;
+        S = false;
+        D = false;
+        F = false;
+    }
+
+    //Realiza as ações da camera 
+    private void botoesCamera(GL2 gl) 
+    {
+        if (A) {
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(-45, 0, 0, 1);
+        } 
+        else if (S){
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(45, 0, 0, 1);
+        }
+        else if (D){
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(135, 0, 0, 1);
+        }
+        else if (F){
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(-135, 0, 0, 1);
+        } 
+    }
+
+>>>>>>> Yudi
 }
