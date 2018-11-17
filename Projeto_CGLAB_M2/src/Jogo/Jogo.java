@@ -37,8 +37,8 @@ public class Jogo
     private boolean right = false;
     private boolean left = false;
     private boolean controlEnable = true; //Controla que o usuario nao devera fazer nenhum movimento, até acaba animação
-    private boolean A = false;
-    private boolean S = false;
+    private boolean E = false;
+    private boolean R = false;
     private boolean D = false;
     private boolean F = false;
     private Mapa m = new Mapa();
@@ -180,14 +180,14 @@ public class Jogo
         
         switch (e.getKeyCode()) //Controle de camera do jogador
         {
-            case KeyEvent.VK_A:
+            case KeyEvent.VK_R:
                 restartCamera();
-                A = true;
+                R = true;
                 break;
 
-            case KeyEvent.VK_S:
+            case KeyEvent.VK_E:
                 restartCamera();
-                S = true;
+                E = true;
                 break;
 
             case KeyEvent.VK_D:
@@ -218,8 +218,8 @@ public class Jogo
     //Renicia o boolean relacionado a camera
     private void restartCamera()
     {
-        A = false;
-        S = false;
+        E = false;
+        R = false;
         D = false;
         F = false;
     }
@@ -227,19 +227,19 @@ public class Jogo
     //Realiza as ações da camera 
     private void botoesCamera(GL2 gl) 
     {
-        if (A) {
+        if (F) {
             gl.glRotated(-45, 1, 0, 0);
             gl.glRotated(-45, 0, 0, 1);
         } 
-        else if (S){
+        else if (D){
             gl.glRotated(-45, 1, 0, 0);
             gl.glRotated(45, 0, 0, 1);
         }
-        else if (D){
+        else if (E){
             gl.glRotated(-45, 1, 0, 0);
             gl.glRotated(135, 0, 0, 1);
         }
-        else if (F){
+        else if (R){
             gl.glRotated(-45, 1, 0, 0);
             gl.glRotated(-135, 0, 0, 1);
         } 
