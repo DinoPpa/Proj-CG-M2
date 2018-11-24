@@ -6,6 +6,8 @@ package Jogo;
 
 import Classe.*;
 import com.jogamp.opengl.util.Animator;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.media.opengl.GL;
@@ -20,26 +22,39 @@ import javax.swing.JFrame;
  *
  * @author Glauco
  */
-public class Jogo
-        implements GLEventListener {
+public class Jogo 
+            implements GLEventListener,
+            KeyListener {
 
     GLU glu = new GLU();
-
+    
     public static void main(String args[]) {
         new Jogo();
     }
-    private double r;
-    private boolean mostra = true;
-
+    
+    private boolean up = false;
+    private boolean down = false;
+    private boolean right = false;
+    private boolean left = false;
+    private boolean controlEnable = true; //Controla que o usuario nao devera fazer nenhum movimento, até acaba animação
+    private boolean E = false;
+    private boolean R = false;
+    private boolean D = false;
+    private boolean F = false;
+    private Mapa m = new Mapa();
+    private int fase = 1;
+    private boolean mostraMenu = false;
+    
     public Jogo() {
         GLJPanel canvas = new GLJPanel();
         canvas.addGLEventListener(this);
-
+        
         JFrame frame = new JFrame("Jogo");
         frame.setSize(700, 700); //define o tamanho da tela
         frame.getContentPane().add(canvas);
         frame.setVisible(true);
-
+        frame.addKeyListener(this);
+        
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -50,43 +65,45 @@ public class Jogo
                 }).start();
             }
         });
-
+        
     }
-
+    
+    @Override
     public void init(GLAutoDrawable glAuto) {
-        GL2 gl = glAuto.getGL().getGL2();
+        Animator a = new Animator(glAuto);
+        a.start();
+        
+        GL gl = glAuto.getGL(); 
         gl.glClearColor(0.4f, 0.4f, 0.4f, 0.4f); //define a cor de fundo
         gl.glEnable(GL.GL_DEPTH_TEST); //teste de profundidade
-
-        Animator ani = new Animator(glAuto);
-        ani.start();
+        
     }
-    Cubo c1 = new Cubo();
 
     public void display(GLAutoDrawable glAuto) {
-
+        
         GL2 gl = glAuto.getGL().getGL2();
-
+        
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
+        
         gl.glLoadIdentity(); //Renicia todos acumulativos
-        gl.glTranslated(0, 0, -20); //Onde estara a camera em posição
-        //Descobrir como deixa a camera de lado para gera um efeito 3D
-       
-        gl.glRotated(r, 1, 1, 1);
-        r = r + 0.05;
-
-        //Chamando o mapa
-        //new Mapa().gerarMapa(1, gl);
-        if (mostra) {
-            c1.cubo(gl);
+        gl.glTranslated(0,0,-15); //Onde estara a camera em posição
+        
+        botoesCamera(gl); //rotaciona o mapa de acordo com o usuario (A,S,D,F,G)
+        
+        if (mostraMenu) // obs.: MostraMenu esta false, pois precisa dá parte da Eloa
+        {
+            //MENU
+            //OBS.: Fase é qual mapa deve ser gerado
         }
-
+        
+        //Chamando o mapa
+        m.gerarMapa(fase, gl);
+        
     }
-
-    public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
-
-        GL2 gl = gLAutoDrawable.getGL().getGL2();
+    
+    public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) 
+    {  
+        GL2 gl = gLAutoDrawable.getGL().getGL2(); 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(60, 1, 1, 30);
@@ -119,11 +136,112 @@ public class Jogo
         gl.glLoadIdentity();
     }*/
     public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-
+        
     }
-
+    
     public void dispose(GLAutoDrawable glad) {
-
+        
     }
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+    
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        
+        if (controlEnable) //Controle do jogador no cubo
+        {
+            controlEnable = false;
+            switch (e.getKeyCode()) 
+            {
+                case KeyEvent.VK_UP:
+                    up = true;
+                    break;
+
+                case KeyEvent.VK_DOWN:
+                    down = true;
+                    break;
+
+                case KeyEvent.VK_RIGHT:
+                    right = true;
+                    break;
+
+                case KeyEvent.VK_LEFT:
+                    left = true;
+                    break;
+
+                default:
+                    controlEnable = true;
+                    break;
+            }
+        }
+        
+        switch (e.getKeyCode()) //Controle de camera do jogador
+        {
+            case KeyEvent.VK_R:
+                restartCamera();
+                R = true;
+                break;
+
+            case KeyEvent.VK_E:
+                restartCamera();
+                E = true;
+                break;
+
+            case KeyEvent.VK_D:
+                restartCamera();
+                D = true;
+                break;
+
+            case KeyEvent.VK_F:
+                restartCamera();
+                F = true;
+                break;
+                
+            case KeyEvent.VK_G:
+                restartCamera();
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+    
+    }
+    
+    //Renicia o boolean relacionado a camera
+    private void restartCamera()
+    {
+        E = false;
+        R = false;
+        D = false;
+        F = false;
+    }
+
+    //Realiza as ações da camera 
+    private void botoesCamera(GL2 gl) 
+    {
+        if (F) {
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(-45, 0, 0, 1);
+        } 
+        else if (D){
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(45, 0, 0, 1);
+        }
+        else if (E){
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(135, 0, 0, 1);
+        }
+        else if (R){
+            gl.glRotated(-45, 1, 0, 0);
+            gl.glRotated(-135, 0, 0, 1);
+        } 
+    }
 }

@@ -19,36 +19,33 @@ public class Mapa
     //Pede para gerar o mapa X
     public void gerarMapa(int id, GL2 gl)
     {
-        double[][] listaInfo = null;
-        
+        double[][] listaInfo = infoMapa(id);
+        renderizar(listaInfo, gl);
+    }
+    
+    public double[][] infoMapa(int id)
+    {
         try
         {
             switch(id)
             {
                 case 1:
-                    listaInfo = m1();
-                break;
+                    return m1();
 
                 case 2:
-                   // listaInfo = m2();
-                break;
+                    return m2();
+            }
 
-                default: 
-                    throw new UnsupportedOperationException("ERRO - ID mapa incorreto");
-            }
-            if(listaInfo == null)
-            {
-                throw new UnsupportedOperationException("ERRO - listaInfo retornou NULL");
-            }
+            throw new UnsupportedOperationException("ERRO - ID mapa incorreto");
         } 
         catch (Exception e) 
         {
             System.out.println(e);
         }
         
-        renderizar(listaInfo, gl);
-        
+        return null;
     }
+    
     
     //Retorna uma lista com os dados da coordenada X,Y,Z 
     //(Foram separado numa funcao para diminui a complexidade)
@@ -65,12 +62,58 @@ public class Mapa
         {-1,0,0},
         {-1,-1,0},
         {0,-1,0},
-        {1,-1,0}};
+        {1,-1,0},
+        {2,1,0},
+        {3,1,0},
+        {3,0,0},
+        {3,-1,0},
+        {2,-1,0}};
         /*  0 - Entrada, 1 - Saida, 2 - Piso
-
-            2 2 2
-            2 0 2 1
-            2 2 2
+                
+                2 2 2 2 2
+                2 0 2 1 2
+                2 2 2 2 2
+        */
+        return temp;
+    }
+    
+    private double[][] m2() 
+    {
+        double[][] temp = 
+        {{0,0,0},
+        {5,1,0},
+        {1,0,0},
+        {1,1,0},
+        {0,1,0},
+        {-1,1,0},
+        {-1,0,0},
+        {-1,-1,0},
+        {0,-1,0},
+        {1,-1,0},
+        {2,0,0},
+        {3,0,0},
+        {3,-1,0},
+        {4,-1,0},
+        {5,-1,0},
+        {5,0,0},
+        {-1,2,0},
+        {0,2,0},
+        {1,2,0},
+        {-1,-2,0},
+        {0,-2,0},
+        {1,-2,0},
+        {-2,0,0},
+        {-2,1,0},
+        {-2,2,0},
+        {-2,-1,0},
+        {-2,-2,0}};
+        /*  0 - Entrada, 1 - Saida, 2 - Piso
+                //Resposta: E,C,D,B....
+              2 2 2 2
+              2 2 2 2 - - - 1
+              2 2 0 2 2 2 - 2  
+              2 2 2 2 - 2 2 2
+              2 2 2 2
         */
         return temp;
     }
@@ -119,4 +162,6 @@ public class Mapa
             //talvez seja ideal: Diminui um pouco ou fazer uma borda
         gl.glPopMatrix();
     }
+
+    
 }
