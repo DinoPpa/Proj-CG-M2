@@ -22,24 +22,24 @@ import javax.swing.JFrame;
  */
 public class Jogo
         implements GLEventListener {
-    
+
     GLU glu = new GLU();
-    
+
     public static void main(String args[]) {
         new Jogo();
     }
     private double r;
-    private boolean mostra=true;
-    
+    private boolean mostra = true;
+
     public Jogo() {
         GLJPanel canvas = new GLJPanel();
         canvas.addGLEventListener(this);
-        
+
         JFrame frame = new JFrame("Jogo");
         frame.setSize(700, 700); //define o tamanho da tela
         frame.getContentPane().add(canvas);
         frame.setVisible(true);
-        
+
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -50,15 +50,13 @@ public class Jogo
                 }).start();
             }
         });
-        
+
     }
-    
+
     public void init(GLAutoDrawable glAuto) {
-          GL2 gl = glAuto.getGL().getGL2();     
+        GL2 gl = glAuto.getGL().getGL2();
         gl.glClearColor(0.4f, 0.4f, 0.4f, 0.4f); //define a cor de fundo
         gl.glEnable(GL.GL_DEPTH_TEST); //teste de profundidade
-        
-      
 
         Animator ani = new Animator(glAuto);
         ani.start();
@@ -66,30 +64,29 @@ public class Jogo
     Cubo c1 = new Cubo();
 
     public void display(GLAutoDrawable glAuto) {
-        
+
         GL2 gl = glAuto.getGL().getGL2();
-        
+
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-        
+
         gl.glLoadIdentity(); //Renicia todos acumulativos
         gl.glTranslated(0, 0, -20); //Onde estara a camera em posição
         //Descobrir como deixa a camera de lado para gera um efeito 3D
-        
+       
         gl.glRotated(r, 1, 1, 1);
         r = r + 0.05;
 
         //Chamando o mapa
         //new Mapa().gerarMapa(1, gl);
-        
-        
-        if(mostra)
-        c1.cubo(gl);
-        
+        if (mostra) {
+            c1.cubo(gl);
+        }
+
     }
-    
+
     public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
-        
-        GL2 gl = gLAutoDrawable.getGL().getGL2();        
+
+        GL2 gl = gLAutoDrawable.getGL().getGL2();
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(60, 1, 1, 30);
@@ -122,11 +119,11 @@ public class Jogo
         gl.glLoadIdentity();
     }*/
     public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-        
+
     }
-    
+
     public void dispose(GLAutoDrawable glad) {
-        
+
     }
-    
+
 }
