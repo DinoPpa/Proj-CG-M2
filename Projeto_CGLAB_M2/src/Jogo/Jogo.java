@@ -41,6 +41,7 @@ public class Jogo
     private boolean R = false;
     private boolean D = false;
     private boolean F = false;
+    private Cubo c = new Cubo();
     private Mapa m = new Mapa();
     private int fase = 1;
     private boolean mostraMenu = false;
@@ -96,8 +97,17 @@ public class Jogo
             //OBS.: Fase é qual mapa deve ser gerado
         }
         
-        //Chamando o mapa
+        //OBS.: o 0,0,0 sempre estara no centro do quadrado azul (inicio) e sua distancia em outros quadrados é 1
         m.gerarMapa(fase, gl);
+        c.gerarCubo(gl);
+        
+        if (controlEnable) 
+        {
+            VerificarDerrota();
+            VerificarVitoria();
+        }
+        
+        movimentacao(gl);
         
     }
     
@@ -223,6 +233,16 @@ public class Jogo
         D = false;
         F = false;
     }
+    
+    //Renicia o boolean relacionado a controle
+    private void restartControle()
+    {
+        up = false;
+        down = false;
+        left = false;
+        right = false;
+        controlEnable = true;
+    }
 
     //Realiza as ações da camera 
     private void botoesCamera(GL2 gl) 
@@ -243,5 +263,46 @@ public class Jogo
             gl.glRotated(-45, 1, 0, 0);
             gl.glRotated(-135, 0, 0, 1);
         } 
+    }
+
+    private void movimentacao(GL2 gl) 
+    {
+        if (!controlEnable) 
+        {
+            if (up) 
+            {
+                c.moverFrente(gl);
+            } 
+            else if(right) 
+            {
+                c.moverDireita(gl);
+            } 
+            else if (left)
+            {
+                c.moverEsquerda(gl);
+            }
+            else if (down)
+            {
+                c.moverTras(gl);
+            }
+            else
+            {
+                throw new UnsupportedOperationException("ERRO - Controle inativo e nenhuma animação permetida");
+            }
+            
+            restartControle();
+        }
+    }
+
+    //Esta parte ira confirma se o jogador ganhou ou nao
+    private void VerificarVitoria() 
+    {
+        
+    }
+    
+    //Esta parte ira confirma se o jogador derrubou o cubo
+    private void VerificarDerrota() 
+    {
+        
     }
 }
