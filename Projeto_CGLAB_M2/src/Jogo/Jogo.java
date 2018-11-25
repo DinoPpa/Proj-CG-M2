@@ -41,6 +41,7 @@ public class Jogo
     private boolean R = false;
     private boolean D = false;
     private boolean F = false;
+    private boolean verificar = false; //Esta variavel foi uma forma de otimizar
     private Cubo c = new Cubo();
     private Mapa m = new Mapa();
     private int fase = 1;
@@ -101,13 +102,14 @@ public class Jogo
         m.gerarMapa(fase, gl);
         c.gerarCubo(gl);
         
-        if (controlEnable) 
+        movimentacao(gl);
+        
+        if (verificar) //isso foi feito para otimizar
         {
-            VerificarDerrota();
+            //obs.: as duas funçoes sao boolean e será para o avisa o gameover ou tela de vitoria
+            VerificarDerrota(); 
             VerificarVitoria();
         }
-        
-        movimentacao(gl);
         
     }
     
@@ -164,6 +166,7 @@ public class Jogo
         if (controlEnable) //Controle do jogador no cubo
         {
             controlEnable = false;
+            verificar = true;
             switch (e.getKeyCode()) 
             {
                 case KeyEvent.VK_UP:
@@ -184,6 +187,7 @@ public class Jogo
 
                 default:
                     controlEnable = true;
+                    verificar = false;
                     break;
             }
         }
@@ -295,14 +299,44 @@ public class Jogo
     }
 
     //Esta parte ira confirma se o jogador ganhou ou nao
-    private void VerificarVitoria() 
+    private boolean VerificarVitoria() 
     {
+        double[][] lista = m.infoMapa(fase);
+        boolean vitoria = false;
         
+        if (lista[1][0] == c.getX() && 
+            lista[1][1] == c.getY() &&
+            c.isBaixo()) 
+        {
+            vitoria = true;
+            System.out.println("Foi encontra uma vitoria");
+        }
+        
+        return vitoria;
     }
     
     //Esta parte ira confirma se o jogador derrubou o cubo
-    private void VerificarDerrota() 
+    private boolean VerificarDerrota() 
     {
+        double[][] lista = m.infoMapa(fase);
+        boolean derrota = true;
         
+        for (double[] ds : lista) 
+        {
+            if (ds[0] == c.getX() && 
+                ds[1] == c.getY()) 
+            {
+                derrota = false;
+                break;
+            }
+            
+        }
+        
+        if (derrota) 
+        {
+            System.out.println("Foi encontra uma derrota");
+        }
+        
+        return derrota;
     }
 }
