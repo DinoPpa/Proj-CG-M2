@@ -43,7 +43,7 @@ public class Cubo
             defineCor(esquerda, gl);
             esquerda(gl);
             
-            defineCor(direita, gl);
+            defineCor(baixo, gl);
             baixo(gl);
             
         gl.glPopMatrix();
@@ -65,7 +65,7 @@ public class Cubo
             gl.glVertex3d(0.5,-0.5,0.5);
             gl.glVertex3d(0.5,-0.5,-0.5);
             gl.glVertex3d(0.5,0.5,-0.5);
-            gl.glVertex3d(0.5,0.5, -0.5); 
+            gl.glVertex3d(0.5,0.5, 0.5); 
         gl.glEnd();
     }
     private void tras(GL2 gl){
