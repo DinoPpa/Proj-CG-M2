@@ -68,7 +68,7 @@ public class Cubo
             gl.glVertex3d(0.5,0.5, 0.5); 
         gl.glEnd();
     }
-    private void tras(GL2 gl){
+    private void baixo(GL2 gl){
         gl.glBegin(GL2.GL_QUADS);
             gl.glVertex3d(-0.5,-0.5,-0.5);
             gl.glVertex3d(0.5,-0.5,-0.5);
@@ -92,7 +92,7 @@ public class Cubo
             gl.glVertex3d(-0.5,0.5,-0.5);
         gl.glEnd();
     }
-    private void baixo(GL2 gl){
+    private void tras(GL2 gl){
         gl.glBegin(GL2.GL_QUADS);
             gl.glVertex3d(-0.5, -0.5, 0.5);
             gl.glVertex3d(0.5,-0.5,0.5);
