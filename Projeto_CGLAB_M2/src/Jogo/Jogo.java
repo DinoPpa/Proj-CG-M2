@@ -47,6 +47,8 @@ public class Jogo
     private int fase = 1;
     private boolean mostraMenu = false;
     
+    private float[] posLuz = {2, 2, 2, 0}; //posição da luz
+    
     public Jogo() {
         GLJPanel canvas = new GLJPanel();
         canvas.addGLEventListener(this);
@@ -75,9 +77,23 @@ public class Jogo
         Animator a = new Animator(glAuto);
         a.start();
         
-        GL gl = glAuto.getGL(); 
+        GL2 gl = glAuto.getGL().getGL2(); 
         gl.glClearColor(0.4f, 0.4f, 0.4f, 0.4f); //define a cor de fundo
         gl.glEnable(GL.GL_DEPTH_TEST); //teste de profundidade
+        
+        gl.glEnable(GL2.GL_COLOR_MATERIAL);
+        
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT1);
+        
+        //Seta os valores da luz RGB
+        float luzEspecular[] = {1,1,1,1};
+        float luzDifusa[]  = {1f,1f,1f,1.0f};
+        float luzAmbiente[]  = {0.1f,0.1f,0.1f,1.0f};
+        
+        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_DIFFUSE,luzDifusa,0); 
+        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_AMBIENT,luzAmbiente,0); 
+        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_SPECULAR,luzEspecular,0); 
         
     }
 
@@ -88,10 +104,12 @@ public class Jogo
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         
         gl.glLoadIdentity(); //Renicia todos acumulativos
+        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_POSITION,posLuz,0); //Onde estará localizado a luz
+        
         gl.glTranslated(-c.getX(),-c.getY(),-15); //Onde estara a camera em posição
         
         botoesCamera(gl); //rotaciona o mapa de acordo com o usuario (A,S,D,F,G)
-        
+                
         if (mostraMenu) // obs.: MostraMenu esta false, pois precisa dá parte da Eloa
         {
             //MENU
@@ -99,7 +117,11 @@ public class Jogo
         }
         
         //OBS.: o 0,0,0 sempre estara no centro do quadrado azul (inicio) e sua distancia em outros quadrados é 1
+        
+        //m.gerarEfeitoLuz(gl);
         m.gerarMapa(fase, gl);
+        
+        //c.gerarEfeitoLuz(gl);
         c.gerarCubo(gl);
         
         movimentacao(gl);

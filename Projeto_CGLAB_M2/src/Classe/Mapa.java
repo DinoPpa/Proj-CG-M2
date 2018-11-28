@@ -163,5 +163,21 @@ public class Mapa
         gl.glPopMatrix();
     }
 
+    public void gerarEfeitoLuz(GL2 gl) 
+    {
+        float matDifusa[]  = {1f,0f,0f};
+        float materialAmbiente[] ={0.25f,0,0,1};
+        float materialEspecular[] ={1,1,1,1};
+        float brilho = 40;
+        
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_DIFFUSE,matDifusa,0);
+       
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT,materialAmbiente,0);
+        
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_SPECULAR,materialEspecular,0);
+        
+        gl.glMaterialf(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS,brilho);
+    }
+
     
 }
