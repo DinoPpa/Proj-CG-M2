@@ -1,0 +1,15 @@
+1 - muda a cor R
+2 - muda a cor G
+3 - muda a cor B
+
+E - camera cima esquerda
+R - camera cima direita
+D - camera baixo esquerda
+F - camera baixo direita
+G - camera Centralizar (padrao)
+
+Seta Cima - move para cima
+Seta direita - move para direita
+Seta Esquerda - move para esquerda
+Seta Baixo - move para baixo
+
