@@ -37,18 +37,30 @@ public class Jogo
     private boolean right = false;
     private boolean left = false;
     private boolean controlEnable = true; //Controla que o usuario nao devera fazer nenhum movimento, até acaba animação
+    
     private boolean E = false;
     private boolean R = false;
     private boolean D = false;
     private boolean F = false;
+    
     private boolean verificar = false; //Esta variavel foi uma forma de otimizar
+    
     private Cubo c = new Cubo();
     private Mapa m = new Mapa();
+    
     private int fase = 1;
+    
     private boolean mostraMenu = false;
     
-    private float[] posLuz = {2, 2, 2, 0}; //posição da luz
+    private float[] posLuz = {0, 0, 4, 1}; //posição da luz
+    private boolean LuzR = true;
+    private boolean LuzG = true;
+    private boolean LuzB = true;    
     
+    //private float luzEspecular[] = {0.25f,0.25f,0.25f,1}; //RGB A - Luz Especular
+    //private float luzDifusa[]  = {0.5f,0.5f,0.5f,1f}; //RGB A - Luz Difusa
+    private float luzAmbiente[]  = {1,1,1,1.0f}; //RGB A - Luz Ambiente
+
     public Jogo() {
         GLJPanel canvas = new GLJPanel();
         canvas.addGLEventListener(this);
@@ -86,14 +98,10 @@ public class Jogo
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT1);
         
-        //Seta os valores da luz RGB
-        float luzEspecular[] = {1,1,1,1};
-        float luzDifusa[]  = {1f,1f,1f,1.0f};
-        float luzAmbiente[]  = {0.1f,0.1f,0.1f,1.0f};
-        
-        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_DIFFUSE,luzDifusa,0); 
-        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_AMBIENT,luzAmbiente,0); 
-        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_SPECULAR,luzEspecular,0); 
+        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_POSITION,posLuz,0); //Onde estará localizado a luz
+        //gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_DIFFUSE,luzDifusa,0); 
+        //gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_AMBIENT,luzAmbiente,0); 
+        //gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_SPECULAR,luzEspecular,0); 
         
     }
 
@@ -104,12 +112,14 @@ public class Jogo
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         
         gl.glLoadIdentity(); //Renicia todos acumulativos
-        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_POSITION,posLuz,0); //Onde estará localizado a luz
-        
+        gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_AMBIENT,luzAmbiente,0); 
+               
         gl.glTranslated(-c.getX(),-c.getY(),-15); //Onde estara a camera em posição
         
         botoesCamera(gl); //rotaciona o mapa de acordo com o usuario (A,S,D,F,G)
-                
+        botoesLuz();   
+        
+        
         if (mostraMenu) // obs.: MostraMenu esta false, pois precisa dá parte da Eloa
         {
             //MENU
@@ -124,13 +134,13 @@ public class Jogo
         //c.gerarEfeitoLuz(gl);
         c.gerarCubo(gl);
         
-        movimentacao(gl);
+        movimentacao(gl); // Realiza a movimentacao do cubo
         
         if (verificar) //isso foi feito para otimizar
         {
             //obs.: as duas funçoes sao boolean e será para o avisa o gameover ou tela de vitoria
-            VerificarDerrota(); 
             VerificarVitoria();
+            VerificarDerrota(); 
         }
         
     }
@@ -239,6 +249,22 @@ public class Jogo
             case KeyEvent.VK_G:
                 restartCamera();
                 break;
+                
+            case KeyEvent.VK_1:
+                LuzR = inverterBoolean(LuzR);
+                mensagemLuz();
+                break;
+                
+            case KeyEvent.VK_2:
+                LuzG = inverterBoolean(LuzG);
+                mensagemLuz();
+            break;
+            
+            case KeyEvent.VK_3:
+                LuzB = inverterBoolean(LuzB);
+                mensagemLuz();
+            break;
+                
             default:
                 break;
         }
@@ -325,6 +351,7 @@ public class Jogo
     {
         double[][] lista = m.infoMapa(fase);
         boolean vitoria = false;
+        verificar = true;
         
         if (lista[1][0] == c.getX() && 
             lista[1][1] == c.getY() &&
@@ -332,6 +359,7 @@ public class Jogo
         {
             vitoria = true;
             System.out.println("Foi encontra uma vitoria");
+            verificar = false;
         }
         
         return vitoria;
@@ -356,9 +384,57 @@ public class Jogo
         
         if (derrota) 
         {
+            verificar = false;
             System.out.println("Foi encontra uma derrota");
         }
         
         return derrota;
+    }
+
+    private boolean inverterBoolean(boolean b) 
+    {
+        if (b) 
+        {
+            return false;
+        } 
+        else 
+        {
+            return true;
+        }
+    }
+
+    private void botoesLuz() 
+    {
+        if (LuzR) 
+        {
+            luzAmbiente[0] = 1;
+        } 
+        else 
+        {
+            luzAmbiente[0] = 0;
+        }
+        
+        if (LuzG) 
+        {
+            luzAmbiente[1] = 1;
+        } 
+        else 
+        {
+            luzAmbiente[1] = 0;
+        }
+        
+        if (LuzB) 
+        {
+            luzAmbiente[2] = 1;
+        } 
+        else 
+        {
+            luzAmbiente[2] = 0;
+        }
+    }
+    
+    private void mensagemLuz()
+    {
+        System.out.println("Luz ambiente alterada: R="+LuzR +" | G="+ LuzG +" | B="+ LuzB);
     }
 }

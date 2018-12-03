@@ -150,7 +150,7 @@ public class Cubo
     //1-direita, 2-tras,3-esquerda,4- frente
     private void mudancaDeFace(int lado)
     {
-        System.out.println("Sem alteração: "+this);
+        System.out.println("Antes da alteração: "+this);
         
         if (cima) 
         {
@@ -245,7 +245,7 @@ public class Cubo
             switch(lado)
             {
                 case 2:
-                    frente = true;
+                    cima = true;
                     break;
                 case 4:
                     baixo = true;
@@ -260,7 +260,7 @@ public class Cubo
             throw new UnsupportedOperationException("ERRO - Todas variaveis boolean esta falsa, qual face é a correta?");
         }
         
-        System.out.println("Com alteração: "+this);
+        System.out.println("Depois da alteração: "+this);
     }
     
     //Animação 

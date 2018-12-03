@@ -148,7 +148,7 @@ public class Mapa
                 break;
 
                 default: //Piso Qualquer
-                    gl.glColor3f(1.0f, 1.0f, 1.0f);
+                    gl.glColor3f(1.0f, 1.0f, 0f);
             }
             // Desenha um quadrado preenchido com a cor corrente
             
@@ -165,8 +165,8 @@ public class Mapa
 
     public void gerarEfeitoLuz(GL2 gl) 
     {
-        float matDifusa[]  = {1f,0f,0f};
-        float materialAmbiente[] ={0.25f,0,0,1};
+        float matDifusa[]  = {1f,1f,0f,1};
+        float materialAmbiente[] ={0.25f,0.25f,0,1};
         float materialEspecular[] ={1,1,1,1};
         float brilho = 40;
         
