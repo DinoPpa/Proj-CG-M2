@@ -323,6 +323,24 @@ public class Cubo
         System.out.println("Depois da alteração: "+this);
     }
     
+    public void reniciaValores()
+    {
+        cima = true;
+        baixo = false;
+        direita = false;
+        esquerda = false;
+        atras = false;
+        frente = false;
+
+        x = 0;
+        y = 0;
+
+        i = 0;
+
+        animando = false;
+        permitirMovimentacao = false; 
+    }
+    
     public void gerarEfeitoLuz(GL2 gl) 
     {
         float matDifusa[]  = {1f,0f,0f};
