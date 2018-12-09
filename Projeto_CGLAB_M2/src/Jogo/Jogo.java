@@ -60,6 +60,7 @@ public class Jogo
     //private float luzEspecular[] = {0.25f,0.25f,0.25f,1}; //RGB A - Luz Especular
     //private float luzDifusa[]  = {0.5f,0.5f,0.5f,1f}; //RGB A - Luz Difusa
     private float luzAmbiente[]  = {1,1,1,1.0f}; //RGB A - Luz Ambiente
+    private int auxAnimacao = 0;
 
     public Jogo() {
         GLJPanel canvas = new GLJPanel();
@@ -131,10 +132,11 @@ public class Jogo
         //m.gerarEfeitoLuz(gl);
         m.gerarMapa(fase, gl);
         
-        //c.gerarEfeitoLuz(gl);
-        c.gerarCubo(gl);
+        movimentacao(gl); //Controle de animação e movimentação
         
-        movimentacao(gl); // Realiza a movimentacao do cubo
+        //c.gerarEfeitoLuz(gl);
+        
+        c.gerarCubo(gl,auxAnimacao);
         
         if (verificar) //isso foi feito para otimizar
         {
@@ -293,7 +295,6 @@ public class Jogo
         down = false;
         left = false;
         right = false;
-        controlEnable = true;
     }
 
     //Realiza as ações da camera 
@@ -315,35 +316,6 @@ public class Jogo
             gl.glRotated(-45, 1, 0, 0);
             gl.glRotated(-135, 0, 0, 1);
         } 
-    }
-
-    private void movimentacao(GL2 gl) 
-    {
-        if (!controlEnable) 
-        {
-            if (up) 
-            {
-                c.moverFrente(gl);
-            } 
-            else if(right) 
-            {
-                c.moverDireita(gl);
-            } 
-            else if (left)
-            {
-                c.moverEsquerda(gl);
-            }
-            else if (down)
-            {
-                c.moverTras(gl);
-            }
-            else
-            {
-                throw new UnsupportedOperationException("ERRO - Controle inativo e nenhuma animação permetida");
-            }
-            
-            restartControle();
-        }
     }
 
     //Esta parte ira confirma se o jogador ganhou ou nao
@@ -436,5 +408,42 @@ public class Jogo
     private void mensagemLuz()
     {
         System.out.println("Luz ambiente alterada: R="+LuzR +" | G="+ LuzG +" | B="+ LuzB);
+    }
+
+    private void movimentacao(GL2 gl) 
+    {
+        if (!controlEnable) 
+        {
+            if (up) 
+            {
+                controlEnable = c.moverFrente(gl);
+                auxAnimacao = 4;
+            } 
+            else if(right) 
+            {
+                controlEnable = c.moverDireita(gl);
+                auxAnimacao = 1;
+            } 
+            else if (left)
+            {
+                controlEnable = c.moverEsquerda(gl);
+                auxAnimacao = 3;
+            }
+            else if (down)
+            {
+                controlEnable = c.moverTras(gl);
+                auxAnimacao = 2;
+            }
+            else
+            {
+                throw new UnsupportedOperationException("ERRO - Controle inativo e nenhuma animação permetida");
+            }
+            System.out.println(auxAnimacao +" -"+ controlEnable);          
+        }
+        else
+        {
+            auxAnimacao = 0;
+            restartControle();
+        }
     }
 }
