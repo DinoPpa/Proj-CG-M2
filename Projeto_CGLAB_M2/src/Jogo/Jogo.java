@@ -115,7 +115,7 @@ public class Jogo
         gl.glLoadIdentity(); //Renicia todos acumulativos
         gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_AMBIENT,luzAmbiente,0); 
                
-        gl.glTranslated(-c.getX(),-c.getY(),-15); //Onde estara a camera em posição
+        gl.glTranslated(0,0,-15); //Onde estara a camera em posição
         
         botoesCamera(gl); //rotaciona o mapa de acordo com o usuario (A,S,D,F,G)
         botoesLuz();   
