@@ -380,9 +380,7 @@ public class Cubo
                 break;
             
         }
-        
-        System.out.println("Anima valor:"+ i);
-        
+                
         if (i < 90) 
         {
             permitirMovimentacao = false;

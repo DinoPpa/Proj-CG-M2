@@ -155,9 +155,21 @@ public class Jogo
         if (verificar) //isso foi feito para otimizar
         {
             //obs.: as duas funçoes sao boolean e será para o avisa o gameover ou tela de vitoria
-            VerificarVitoria();
-            VerificarDerrota(); 
+            if (VerificarVitoria()) 
+            {
+                c.reniciaValores();
+                reniciaValores();
+                selectFase++;
+                
+                
+            }
+            if (VerificarDerrota()) 
+            {
+                c.reniciaValores();
+                reniciaValores();
+            }
         }
+        
         
     }
     
@@ -359,8 +371,7 @@ public class Jogo
             else
             {
                 throw new UnsupportedOperationException("ERRO - Controle inativo e nenhuma animação permetida");
-            }
-            System.out.println(auxAnimacao +" -"+ controlEnable);          
+            }        
         }
         else
         {
@@ -470,4 +481,21 @@ public class Jogo
     {
         System.out.println("Luz ambiente alterada: R="+LuzR +" | G="+ LuzG +" | B="+ LuzB);
     }
+
+    private void reniciaValores() 
+    {
+        restartCamera();
+        restartControle();
+        restartLuz();
+        controlEnable = true;
+        verificar = false;
+        auxAnimacao = 0;
+    }
+    private void restartLuz() 
+    {
+        LuzR = true;
+        LuzG = true;
+        LuzB = true; 
+    }
+    
 }
