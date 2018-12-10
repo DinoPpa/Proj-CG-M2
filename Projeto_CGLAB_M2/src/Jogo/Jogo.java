@@ -6,6 +6,9 @@ package Jogo;
 
 import Classe.*;
 import com.jogamp.opengl.util.Animator;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -17,6 +20,9 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -28,15 +34,15 @@ public class Jogo
 
     GLU glu = new GLU();
     
-    public static void main(String args[]) {
-        new Jogo();
-    }
+ 
     
     private boolean up = false;
     private boolean down = false;
     private boolean right = false;
     private boolean left = false;
     private boolean controlEnable = true; //Controla que o usuario nao devera fazer nenhum movimento, até acaba animação
+    JLabel gameOver = new JLabel();
+     JPanel container = new JPanel();
     
     private boolean E = false;
     private boolean R = false;
@@ -48,7 +54,7 @@ public class Jogo
     private Cubo c = new Cubo();
     private Mapa m = new Mapa();
     
-    private int fase = 1;
+    private int selectFase = 1;
     
     private boolean mostraMenu = false;
     
@@ -56,15 +62,19 @@ public class Jogo
     private boolean LuzR = true;
     private boolean LuzG = true;
     private boolean LuzB = true;    
-    
+        public static int larguraJa = 600;
+    public static int alturaJa = 550;
+   
     //private float luzEspecular[] = {0.25f,0.25f,0.25f,1}; //RGB A - Luz Especular
     //private float luzDifusa[]  = {0.5f,0.5f,0.5f,1f}; //RGB A - Luz Difusa
     private float luzAmbiente[]  = {1,1,1,1.0f}; //RGB A - Luz Ambiente
-    private int auxAnimacao = 0;
 
-    public Jogo() {
+    public Jogo(int selectFase) {
         GLJPanel canvas = new GLJPanel();
         canvas.addGLEventListener(this);
+         this.selectFase = selectFase;
+         
+          gameOver.setBounds((larguraJa/2)-40,0,100,20);
         
         JFrame frame = new JFrame("Jogo");
         frame.setSize(700, 700); //define o tamanho da tela
@@ -84,6 +94,8 @@ public class Jogo
         });
         
     }
+
+
     
     @Override
     public void init(GLAutoDrawable glAuto) {
@@ -115,7 +127,7 @@ public class Jogo
         gl.glLoadIdentity(); //Renicia todos acumulativos
         gl.glLightfv(GL2.GL_LIGHT1,GL2.GL_AMBIENT,luzAmbiente,0); 
                
-        gl.glTranslated(0,0,-15); //Onde estara a camera em posição
+        gl.glTranslated(-c.getX(),-c.getY(),-15); //Onde estara a camera em posição
         
         botoesCamera(gl); //rotaciona o mapa de acordo com o usuario (A,S,D,F,G)
         botoesLuz();   
@@ -130,13 +142,12 @@ public class Jogo
         //OBS.: o 0,0,0 sempre estara no centro do quadrado azul (inicio) e sua distancia em outros quadrados é 1
         
         //m.gerarEfeitoLuz(gl);
-        m.gerarMapa(fase, gl);
-        
-        movimentacao(gl); //Controle de animação e movimentação
+        m.gerarMapa(selectFase, gl);
         
         //c.gerarEfeitoLuz(gl);
+        c.gerarCubo(gl);
         
-        c.gerarCubo(gl,auxAnimacao);
+        movimentacao(gl); // Realiza a movimentacao do cubo
         
         if (verificar) //isso foi feito para otimizar
         {
@@ -295,6 +306,7 @@ public class Jogo
         down = false;
         left = false;
         right = false;
+        controlEnable = true;
     }
 
     //Realiza as ações da camera 
@@ -318,10 +330,39 @@ public class Jogo
         } 
     }
 
+    private void movimentacao(GL2 gl) 
+    {
+        if (!controlEnable) 
+        {
+            if (up) 
+            {
+                c.moverFrente(gl);
+            } 
+            else if(right) 
+            {
+                c.moverDireita(gl);
+            } 
+            else if (left)
+            {
+                c.moverEsquerda(gl);
+            }
+            else if (down)
+            {
+                c.moverTras(gl);
+            }
+            else
+            {
+                throw new UnsupportedOperationException("ERRO - Controle inativo e nenhuma animação permetida");
+            }
+            
+            restartControle();
+        }
+    }
+
     //Esta parte ira confirma se o jogador ganhou ou nao
     private boolean VerificarVitoria() 
     {
-        double[][] lista = m.infoMapa(fase);
+        double[][] lista = m.infoMapa(selectFase);
         boolean vitoria = false;
         verificar = true;
         
@@ -331,16 +372,22 @@ public class Jogo
         {
             vitoria = true;
             System.out.println("Foi encontra uma vitoria");
+             
+         
             verificar = false;
+            JOptionPane.showMessageDialog(null, "Vitória");
         }
         
         return vitoria;
     }
     
+    
+    
+  
     //Esta parte ira confirma se o jogador derrubou o cubo
     private boolean VerificarDerrota() 
     {
-        double[][] lista = m.infoMapa(fase);
+        double[][] lista = m.infoMapa(selectFase);
         boolean derrota = true;
         
         for (double[] ds : lista) 
@@ -357,11 +404,15 @@ public class Jogo
         if (derrota) 
         {
             verificar = false;
+ 
             System.out.println("Foi encontra uma derrota");
+              JOptionPane.showMessageDialog(null, "Game Over");
         }
         
         return derrota;
     }
+    
+
 
     private boolean inverterBoolean(boolean b) 
     {
@@ -408,42 +459,5 @@ public class Jogo
     private void mensagemLuz()
     {
         System.out.println("Luz ambiente alterada: R="+LuzR +" | G="+ LuzG +" | B="+ LuzB);
-    }
-
-    private void movimentacao(GL2 gl) 
-    {
-        if (!controlEnable) 
-        {
-            if (up) 
-            {
-                controlEnable = c.moverFrente(gl);
-                auxAnimacao = 4;
-            } 
-            else if(right) 
-            {
-                controlEnable = c.moverDireita(gl);
-                auxAnimacao = 1;
-            } 
-            else if (left)
-            {
-                controlEnable = c.moverEsquerda(gl);
-                auxAnimacao = 3;
-            }
-            else if (down)
-            {
-                controlEnable = c.moverTras(gl);
-                auxAnimacao = 2;
-            }
-            else
-            {
-                throw new UnsupportedOperationException("ERRO - Controle inativo e nenhuma animação permetida");
-            }
-            System.out.println(auxAnimacao +" -"+ controlEnable);          
-        }
-        else
-        {
-            auxAnimacao = 0;
-            restartControle();
-        }
     }
 }
