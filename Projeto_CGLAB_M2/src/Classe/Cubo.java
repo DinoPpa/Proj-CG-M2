@@ -20,14 +20,25 @@ public class Cubo
     private boolean esquerda = false;
     private boolean atras = false;
     private boolean frente = false;
+    
     private double x = 0;
     private double y = 0;
     private final double z = 0.55; // este determina a ditancia do cubo em relacao ao mapa
     
-    public void gerarCubo(GL2 gl)
+    private double i; // usado como axiliar para animação
+    
+    private boolean animando = false; //é usado como controle de transição entre animar e realmente mover
+    private boolean permitirMovimentacao = false; //auxiliar para avisa a animação foi terminada
+    
+    public void gerarCubo(GL2 gl, int lado)
     {        
         gl.glPushMatrix();
             gl.glTranslated(x, y, z);
+            
+            if (lado != 0) 
+            {  
+                anima(gl, lado);
+            }
             
             defineCor(cima, gl);
             cima(gl);
@@ -105,38 +116,87 @@ public class Cubo
     //Mover cubos
     //----------------------------------------------------------------
     
-    public void moverDireita(GL2 gl){
-        x += 1;
+    public boolean moverDireita(GL2 gl){
+        if (animando) // animação acabo?
+        {
+            if (permitirMovimentacao) 
+            {
+                animando = false;
+                x += 1;
+                mudancaDeFace(1);
+                return true;
+            }
+        }
+        else
+        {
+            animando = true;
+        }
         
-        //animaDireita(gl);
-        
-        mudancaDeFace(1);
+        return false;
     }
-    public void moverEsquerda(GL2 gl){
-        x -= 1;
+    public boolean moverEsquerda(GL2 gl){
         
-        //animaEsquerda(gl);
+        if (animando) // animação acabo?
+        {
+            if (permitirMovimentacao) 
+            {
+                animando = false;
+                x -= 1;
+                mudancaDeFace(3);
+                return true;
+            }
+        }
+        else
+        {
+            animando = true;
+        }
         
-        mudancaDeFace(3);
+        return false;
     }
-    public void moverFrente(GL2 gl){
-        y += 1;
+    public boolean moverFrente(GL2 gl){
         
-        //animaFrente(gl);
+        if (animando) // animação acabo?
+        {
+            if (permitirMovimentacao) 
+            {
+                animando = false;
+                y += 1;
+                mudancaDeFace(4);
+                return true;
+            }
+        }
+        else
+        {
+            animando = true;
+        }
         
-        mudancaDeFace(4);
+        return false;
     }
-    public void moverTras(GL2 gl){
-        y -= 1;
+    public boolean moverTras(GL2 gl){
+        //Primeira vez: permitir animicao e retorna false
+        //Durante animação return false
+        //Fim: realizar a movimentacao
         
-        //animaTras(gl);
+        if (animando) // animação acabo?
+        {
+            if (permitirMovimentacao) 
+            {
+                animando = false;
+                y -= 1;
+                mudancaDeFace(2);
+                return true;
+            }
+        }
+        else
+        {
+            animando = true;
+        }
         
-        mudancaDeFace(2);
+        return false;
     }
     
     //----------------------------------------------------------------
-    private void defineCor(boolean b,GL2 gl)
-    {
+    private void defineCor(boolean b,GL2 gl){
         if (b) 
         {
            gl.glColor3f(1, 0, 0);
@@ -263,38 +323,103 @@ public class Cubo
         System.out.println("Depois da alteração: "+this);
     }
     
+    public void reniciaValores()
+    {
+        cima = true;
+        baixo = false;
+        direita = false;
+        esquerda = false;
+        atras = false;
+        frente = false;
+
+        x = 0;
+        y = 0;
+
+        i = 0;
+
+        animando = false;
+        permitirMovimentacao = false; 
+    }
+    
+    public void gerarEfeitoLuz(GL2 gl) 
+    {
+        float matDifusa[]  = {1f,0f,0f};
+        float materialAmbiente[] ={0.25f,0,0,1};
+        float materialEspecular[] ={1,1,1,1};
+        float brilho = 40;
+        
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_DIFFUSE,matDifusa,0);
+       
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT,materialAmbiente,0);
+        
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_SPECULAR,materialEspecular,0);
+        
+        gl.glMaterialf(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS,brilho);
+    }
+
     //Animação 
     //----------------------------------------------------------------
+    
+    private void anima(GL2 gl, int lado) 
+    {
+        i++; //Este valor define a velocidade da animação
+        
+        switch(lado)
+        {
+            case 1:
+                animaDireita(gl);
+                break;
+            case 2:
+                animaTras(gl);
+                break;
+            case 3:
+                animaEsquerda(gl);
+                break;
+            case 4:
+                animaFrente(gl);
+                break;
+            
+        }
+        
+        System.out.println("Anima valor:"+ i);
+        
+        if (i < 90) 
+        {
+            permitirMovimentacao = false;
+        }
+        else
+        {
+            i = 0;
+            permitirMovimentacao = true;
+        }
+    }
+    
     private void animaDireita(GL2 gl) 
     {
-        gl.glPushMatrix();
-            gl.glTranslated(1, 0, 0);
-            gl.glRotated(90, 0, 0, 0);
-        gl.glPopMatrix();
+        gl.glTranslated(0.5, 0, -0.5);
+        gl.glRotated(i, 0, 1, 0);
+        gl.glTranslated(-0.5, 0, 0.5);
     }
 
     private void animaEsquerda(GL2 gl) 
     {
-        gl.glPushMatrix();
-            gl.glTranslated(-1, 0, 0);
-            gl.glRotated(90, 0, 0, 0);
-        gl.glPopMatrix();
+        gl.glTranslated(-0.5, 0, -0.5);
+        gl.glRotated(-i, 0, 1, 0);
+         gl.glTranslated(0.5, 0, 0.5);
     }
 
     private void animaFrente(GL2 gl) 
     {
-        gl.glPushMatrix();
-            gl.glTranslated(0, 0, 1);
-            gl.glRotated(90, 0, 0, 0);
-        gl.glPopMatrix();
+        gl.glTranslated(0, 0.5, -0.5); 
+        gl.glRotated(-i, 1, 0, 0);
+        gl.glTranslated(0, -0.5, 0.5); 
     }
 
     private void animaTras(GL2 gl) 
     {
-        gl.glPushMatrix();
-            gl.glTranslated(0, 0, -1);
-            gl.glRotated(90, 0, 0, 0);
-        gl.glPopMatrix();
+        gl.glTranslated(0, -0.5, -0.5); 
+        gl.glRotated(i, 1, 0, 0);
+        gl.glTranslated(0, 0.5, 0.5); 
     }
     
     //Get e Set
@@ -353,20 +478,4 @@ public class Cubo
         return s;
     }    
 
-    public void gerarEfeitoLuz(GL2 gl) 
-    {
-        float matDifusa[]  = {1f,0f,0f};
-        float materialAmbiente[] ={0.25f,0,0,1};
-        float materialEspecular[] ={1,1,1,1};
-        float brilho = 40;
-        
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_DIFFUSE,matDifusa,0);
-       
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT,materialAmbiente,0);
-        
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_SPECULAR,materialEspecular,0);
-        
-        gl.glMaterialf(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS,brilho);
-    }
-    
 }
